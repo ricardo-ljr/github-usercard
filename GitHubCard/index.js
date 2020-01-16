@@ -3,6 +3,19 @@
            https://api.github.com/users/<your name>
 */
 
+const cardContainer = document.querySelector(".cards");
+
+// axios
+//   .get("https://api.github.com/users/ricardo-ljr")
+//   .then(response => {
+//     Object.keys(response).forEach(item => {
+//       cardContainer.append(gitCard(response[item]));
+//     });
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -24,7 +37,25 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  "ricardo-ljr",
+  "tetondan",
+  "dustinmyers",
+  "justsml",
+  "luishrd",
+  "bigknell"
+];
+
+followersArray
+  .forEach(followed => {
+    axios.get(`https://api.github.com/users/${followed}`).then(response => {
+      console.log(response);
+      cardContainer.append(gitCard(response.data));
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -45,6 +76,64 @@ const followersArray = [];
 </div>
 
 */
+
+function gitCard(object) {
+  const newCard = document.createElement("div"),
+    newImage = document.createElement("img"),
+    newCardInfo = document.createElement("div"),
+    newName = document.createElement("h3"),
+    newUsername = document.createElement("p"),
+    newLocation = document.createElement("p"),
+    newProfile = document.createElement("p"),
+    newAddress = document.createElement("a"),
+    newFollowers = document.createElement("p"),
+    newFollowing = document.createElement("p"),
+    newBio = document.createElement("p"),
+    graph = document.createElement("div");
+
+  // Setup
+
+  newCard.append(newImage);
+  newCard.append(newCardInfo);
+  newCardInfo.append(newName);
+  newCardInfo.append(newUsername);
+  newCardInfo.append(newProfile);
+  newCardInfo.append(newLocation);
+  newProfile.append(newAddress);
+  newCardInfo.append(newFollowers);
+  newCardInfo.append(newFollowing);
+  newCardInfo.append(newBio);
+  newCard.append(graph);
+
+  // Classes
+
+  newCard.classList.add("card");
+  newCardInfo.classList.add("card-info");
+  newName.classList.add("name");
+  newUsername.classList.add("username");
+  graph.classList.add("calendar");
+  graph.classList.add("calendar-toggle");
+
+  // Text Content
+
+  newImage.src = object.avatar_url;
+  newName.textContent = object.name;
+  newUsername.textContent = object.login;
+  newAddress.href = object.html_url;
+
+  newLocation.textContent = `Location: ${object.location}`;
+  newProfile.textContent = `Profile: ${object.html_url}`;
+  newFollowers.textContent = `Followers: ${object.followers_url}`;
+  newFollowing.textContent = `Following:  ${object.following_url}`;
+  newBio.textContent = `Bio: ${object.bio}`;
+  new GitHubCalendar(graph, object.login);
+
+  newCard.addEventListener("click", event => {
+    graph.classList.toggle("calendar-toggle");
+  });
+
+  return newCard;
+}
 
 /* List of LS Instructors Github username's: 
   tetondan
