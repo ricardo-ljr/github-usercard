@@ -8,7 +8,7 @@ const cardContainer = document.querySelector(".cards");
 // axios
 //   .get("https://api.github.com/users/ricardo-ljr")
 //   .then(response => {
-//     response.forEach(item => {
+//     Object.keys(response).forEach(item => {
 //       cardContainer.append(gitCard(response[item]));
 //     });
 //   })
@@ -88,7 +88,8 @@ function gitCard(object) {
     newAddress = document.createElement("a"),
     newFollowers = document.createElement("p"),
     newFollowing = document.createElement("p"),
-    newBio = document.createElement("p");
+    newBio = document.createElement("p"),
+    graph = document.createElement("div");
 
   // Setup
 
@@ -102,6 +103,7 @@ function gitCard(object) {
   newCardInfo.append(newFollowers);
   newCardInfo.append(newFollowing);
   newCardInfo.append(newBio);
+  newCard.append(graph);
 
   // Classes
 
@@ -109,6 +111,8 @@ function gitCard(object) {
   newCardInfo.classList.add("card-info");
   newName.classList.add("name");
   newUsername.classList.add("username");
+  graph.classList.add("calendar");
+  graph.classList.add("calendar-toggle");
 
   // Text Content
 
@@ -122,6 +126,11 @@ function gitCard(object) {
   newFollowers.textContent = `Followers: ${object.followers_url}`;
   newFollowing.textContent = `Following:  ${object.following_url}`;
   newBio.textContent = `Bio: ${object.bio}`;
+  new GitHubCalendar(graph, object.login);
+
+  newCard.addEventListener("click", event => {
+    graph.classList.toggle("calendar-toggle");
+  });
 
   return newCard;
 }
